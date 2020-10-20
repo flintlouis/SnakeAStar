@@ -16,7 +16,7 @@ def initPygame():
 
 def loadMisc():
 	bitesound = pygame.mixer.Sound('sounds/bite.wav')
-	hit = pygame.mixer.Sound('sounds/hit.mp3')
+	hit = pygame.mixer.Sound('sounds/hit.wav')
 	music = pygame.mixer.music.load('sounds/music.mp3')
 	myfont = pygame.font.SysFont("arialblack", 16)
 	return bitesound, hit, myfont
@@ -41,13 +41,22 @@ def main():
 	apple = Food()
 	os.system("clear")
 
-	pygame.mixer.music.play(-1)
+
+	# from info import LEFT, RIGHT, UP, DOWN
+	# # snake.move()
+	# # snake.move()
+	# snake.head = (24,24)
+	# snake.direction = LEFT
+	# print(snake.wallHit(snake.getNewHead()))
+
+	# pygame.mixer.music.play(-1)
 	path = None
 	score = 0
 	# Mainloop
 	while(True):
 		clock.tick(settings.fps)
 		surface.fill(BLACK)
+		handle_keys(settings)
 
 		# A* Pathfinding to find apple
 		if not path:
@@ -70,9 +79,8 @@ def main():
 			if i == len(path):
 				path = None
 
-		snake.move()
-		# Check collision
-		if snake.head in snake.body[2:]:
+		# Check if snake hits obstacle
+		if snake.hit(settings.walls):
 			if not settings.mute:
 				hit.play()
 			snake.reset(3)
@@ -82,8 +90,11 @@ def main():
 				settings.saveHighscore()
 			score = 0
 			pygame.time.delay(1000)
+
+		snake.move(settings.walls)
+
 		# Check if apple gets eaten
-		elif snake.head == apple.position:
+		if snake.head == apple.position:
 			if not settings.mute:
 				bitesound.play()
 			snake.add_body()
@@ -93,11 +104,8 @@ def main():
 
 		snake.draw(surface)
 		apple.draw(surface)
-
 		if settings.walls:
 			drawWalls(surface)
-
-		handle_keys(settings)
 		display(screen, surface, myfont, score, settings.highscore)
 
 main()

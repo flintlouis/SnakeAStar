@@ -12,8 +12,11 @@ class Snake(object):
 	def add_body(self):
 		self.body.append(self.body[-1])
 
+	def getOpDir(self, dir):
+		return (dir[0]*-1, dir[1]*-1)
+
 	def turn(self, dir):
-		if (dir[0]*-1, dir[1]*-1) == self.direction or not self.moved:
+		if self.getOpDir(dir) == self.direction or not self.moved:
 			return
 		self.direction = dir
 		self.moved = False
@@ -21,10 +24,8 @@ class Snake(object):
 	def getDir(self, pos):
 		return pos[0]-self.head[0], pos[1]-self.head[1]
 
-	def move(self):
-		x, y = self.direction
-		headx, heady = self.head
-		newhead = (int((x+headx)%GRID_WIDTH), int((y+heady)%GRID_HEIGHT))
+	def move(self, walls):
+		newhead = self.getNewHead(walls)
 		self.body.insert(0, newhead)
 		self.body.pop()
 		self.head = newhead
@@ -42,6 +43,29 @@ class Snake(object):
 		drawRect(surface, self.head, HEAD)
 		for pos in self.body[1:]:
 			drawRect(surface, pos, GREEN)
+	
+	def getNewHead(self, walls):
+		x, y = self.direction
+		headx, heady = self.head
+		if walls:
+			return (headx+x, heady+y)
+		return (int((x+headx)%GRID_WIDTH), int((y+heady)%GRID_HEIGHT))
+
+	def wallHit(self, pos):
+		x, y = pos
+		return x < 0 or x >= GRID_WIDTH or y < 0 or y >= GRID_HEIGHT
+
+	def hit(self, walls):
+		pos = self.getNewHead(walls)
+		if pos in self.body[:-1] or self.wallHit(pos):
+			return True
+		return False
+
+	# def zigzag(self, walls):
+	# 	if not self.hit(walls):
+	# 		return
+		
+
 
 class Food(object):
 	def __init__(self):
@@ -97,7 +121,4 @@ def handle_keys(settings):
 			elif event.key == pygame.K_DOWN and settings.fps > 10:
 				settings.fps -= 5
 			elif event.key == pygame.K_SPACE:
-				if settings.walls:
-					settings.walls = False
-				else:
-					settings.walls = True
+				settings.walls = False if settings.walls else True
