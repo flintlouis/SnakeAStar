@@ -61,12 +61,6 @@ class Snake(object):
 			return True
 		return False
 
-	# def zigzag(self, walls):
-	# 	if not self.hit(walls):
-	# 		return
-		
-
-
 class Food(object):
 	def __init__(self):
 		self.colour = (150, 20, 20)
