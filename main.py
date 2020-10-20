@@ -41,15 +41,7 @@ def main():
 	apple = Food()
 	os.system("clear")
 
-
-	# from info import LEFT, RIGHT, UP, DOWN
-	# # snake.move()
-	# # snake.move()
-	# snake.head = (24,24)
-	# snake.direction = LEFT
-	# print(snake.wallHit(snake.getNewHead()))
-
-	# pygame.mixer.music.play(-1)
+	pygame.mixer.music.play(-1)
 	path = None
 	score = 0
 	# Mainloop
