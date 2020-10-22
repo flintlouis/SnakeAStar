@@ -33,8 +33,7 @@ def findPath(openSet, closedSet, maze, end, snake, walls):
 			neighbour.update(g, end, current, walls)
 			openSet.append(neighbour)
 		else:
-			f = neighbour.h + g
-			# Update node in openSet because better f was found
-			if f < neighbour.f:
+			# Update node in openSet because better g was found
+			if g < neighbour.g:
 				neighbour.update(g, end, current, walls)
 	return None
